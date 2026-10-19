@@ -16,7 +16,8 @@ parser.add_argument("--cpus", type=float, help="Number of CPUs", default=None)
 parser.add_argument("--mem", type=int, help="RAM memory size (in GB)", default=100)
 parser.add_argument("--noshm", action="store_true", help="Do not use shared memory")
 parser.add_argument("--student", action="store_true", help="Use student paths")
-parser.add_argument("--dry", action="store_true", help="Dry run")
+parser.add_argument("--dry", "--dry-run", dest="dry", action="store_true", help="Dry run")
+parser.add_argument("--wandb", action="store_true", help="Pass the wandb-secret as WANDB_API_KEY")
 parser.add_argument(
     "--node-pool", type=str, help="Node pool to use", default="v100", choices=["default", "v100", "h100"]
 )
@@ -60,6 +61,8 @@ def main(args):
     else:
         args.cpus = f"--cpu {args.cpus} \\"
 
+    args.wandb = "-e WANDB_API_KEY=SECRET:wandb-secret,secret \\" if args.wandb else ""
+
     config = config_template.format(**vars(args))
     config = "".join([s for s in config.strip().splitlines(True) if s.strip("\r\n").strip()]) + "\n"
     print(colored(config, "grey", force_color=True))
@@ -77,11 +80,12 @@ runai submit \\
   --name {name} \\
   -i {image} \\
   --gpu {gpus} \\
+  --memory {mem}G \\
   {cpus}
   {shm}
   -e VIRTUAL_HOME={virtual_home}/{user} \\
   -e DATA_DIR=/mnt/lts4/scratch/data \\
-  -e WANDB_API_KEY=SECRET:wandb-secret,secret \\
+  {wandb}
   -e HOME=/home/{user} \\
   --node-pool {node_pool} \\
   --run-as-uid {uid} \\

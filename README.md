@@ -131,6 +131,8 @@ python launch.py \
     --command='cd path/to/code && python train.py --arg1=1 --arg2=2'
 ```
 
+Add `--wandb` to pass your `wandb-secret` to the job as `WANDB_API_KEY`, and `--mem=N` to request N GB of RAM (default 100).
+
 #### Do not launch but only print out the yaml config file
 ```bash
 python launch.py \
