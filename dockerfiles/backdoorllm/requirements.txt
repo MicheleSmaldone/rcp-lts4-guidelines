@@ -27,3 +27,8 @@ deepspeed==0.15.4
 pyarrow>=15,<18
 # Llama-2 weights are served via xet storage
 huggingface_hub[hf_xet]>=0.32,<0.36
+
+# DefenseBox: openai is imported by utils/backdoor_eval.py, jsonlines by cleangen, bitsandbytes by quantize
+openai
+jsonlines
+bitsandbytes==0.44.1
